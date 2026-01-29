@@ -17,6 +17,8 @@ ApplicationWindow {
     palette.highlight: "#3b82f6"
     palette.highlightedText: "white"
 
+    property int currentChannelIndex: 0
+
     Rectangle {
         anchors.fill: parent
         color: win.palette.window
@@ -49,12 +51,44 @@ ApplicationWindow {
                 }
 
                 Frame {
-                    Layout.preferredWidth: 320
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
+                    padding: 0
 
-                    Label {
-                        text: "Liste des salons"
-                        color: win.palette.text
+                    ButtonGroup {
+                        id: channelGroup
+                        exclusive: true
+                    }
+
+                    ListView {
+                        id: channelList
+                        anchors.fill: parent
+                        clip: true
+                        spacing: 6
+
+                        model: ListModel {
+                            ListElement { name: "# général" }
+                            ListElement { name: "# annonces" }
+                            ListElement { name: "# dev" }
+                            ListElement { name: "# vocal" }
+                        }
+
+                        delegate: ItemDelegate {
+                            width: channelList.width
+                            text: model.name
+
+                            checkable: true
+                            ButtonGroup.group: channelGroup
+
+                            checked: (index === win.currentChannelIndex)
+                            onClicked: win.currentChannelIndex = index
+
+                            background: Rectangle {
+                                radius: 8
+                                color: (parent.checked ? "#243044" : "transparent")
+                                border.color: (parent.checked ? "#3b82f6" : "transparent")
+                            }
+                        }
                     }
                 }
             }
